@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alzheimer's Disease Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=3">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        /* Inline fallback styles - Dark Theme */
+        body { 
+            background: #0f172a !important; 
+            font-family: 'Inter', sans-serif !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            color: #f1f5f9 !important;
+        }
+        .hero { 
+            background: linear-gradient(135deg, #020617 0%, #0c4a6e 25%, #075985 50%, #0369a1 75%, #0284c7 100%) !important; 
+            color: white !important; 
+            padding: 3rem 0 6rem !important;
+            text-align: center !important;
+        }
+        .container { 
+            max-width: 1200px !important; 
+            margin: 0 auto !important; 
+            padding: 0 1rem !important;
+        }
+        .upload-area { 
+            border: 3px dashed #334155 !important; 
+            border-radius: 20px !important; 
+            padding: 4rem 3rem !important; 
+            text-align: center !important; 
+            background: #1e293b !important;
+            margin: 2rem 0 !important;
+            cursor: pointer !important;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3) !important;
+        }
+        .btn { 
+            background: linear-gradient(135deg, #0284c7 0%, #075985 100%) !important; 
+            color: white !important; 
+            padding: 1rem 2rem !important; 
+            border: none !important; 
+            border-radius: 12px !important; 
+            cursor: pointer !important;
+            font-size: 1rem !important;
+            font-weight: 600 !important;
+            box-shadow: 0 4px 14px 0 rgba(2, 132, 199, 0.4) !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-brain"></i>
+                    <h1></h1>
+                </div>
+                <nav class="nav">
+                    <a href="#upload" class="nav-link">Upload</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-background">
+            <div class="hero-shape hero-shape-1"></div>
+            <div class="hero-shape hero-shape-2"></div>
+            <div class="hero-shape hero-shape-3"></div>
+        </div>
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Alzheimer's Disease <span class="gradient-text">Detection System</span></h1>
+                <p class="hero-subtitle">
+                    Advanced ResNet50 deep learning model for early detection and stage classification of dementia through brain scan analysis
+                </p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-number">4</div>
+                            <div class="stat-label">Dementia Stages</div>
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-number">94%</div>
+                            <div class="stat-label">Accuracy Rate</div>
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-icon"><i class="fas fa-image"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-number">224×224</div>
+                            <div class="stat-label">Resolution</div>
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-icon"><i class="fas fa-bolt"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-number">5s</div>
+                            <div class="stat-label">Analysis Time</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+
+    <!-- Upload Section -->
+    <section class="section" id="upload">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-upload"></i>
+                    Upload Brain Scan
+                </h2>
+                <p class="section-subtitle">
+                    Upload MRI or CT brain scan images for AI analysis
+                </p>
+            </div>
+
+            <!-- Error Alert -->
+            <div class="alert alert-error" id="error-alert"></div>
+
+            <!-- Upload Area -->
+            <div class="upload-area" id="upload-section">
+                <div class="upload-content">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3>Upload Brain Scan</h3>
+                    <p>Drag and drop your brain scan image here, or click to browse</p>
+                    <div class="file-types">
+                        <i class="fas fa-file-image"></i>
+                        Supports: JPG, PNG, JPEG (Max 16MB)
+                    </div>
+                </div>
+                <input type="file" id="file-input" accept="image/*" style="display: none;">
+            </div>
+
+            <!-- Preview Section -->
+            <div class="uploaded-image" id="preview-section" style="display: none;">
+                <div class="image-container">
+                    <img id="preview-img" alt="Brain scan preview">
+                    <div class="image-overlay">
+                        <button class="btn-icon" onclick="removeImage()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="image-info">
+                    <h4>Brain Scan Ready for Analysis</h4>
+                    <div class="image-details">
+                        <span id="file-name"></span>
+                        <span id="file-size"></span>
+                    </div>
+                    <button class="btn btn-primary" id="analyze-btn">
+                        <i class="fas fa-brain"></i>
+                        Analyze Brain Scan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Analysis Loading -->
+    <section class="analysis-section" id="loading" style="display: none;">
+        <div class="container">
+            <div class="analysis-loading">
+                <div class="brain-animation">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3>Analyzing Brain Scan</h3>
+                <p></p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-percentage" id="progress-text">0%</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="section" id="results-section" style="display: none;">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-chart-line"></i>
+                    Analysis Results
+                </h2>
+            </div>
+
+            <!-- Heatmap Visualization Section -->
+            <div class="heatmap-section">
+                <div class="card-header">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <h3>Brain Scan Analysis with Visual Localization</h3>
+                </div>
+                <div class="heatmap-container">
+                    <div class="heatmap-image-container">
+                        <img id="heatmap-img" src="" alt="Brain scan with attention heatmap" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.3);">
+                        <div class="heatmap-legend">
+                            <div class="legend-label">Attention Heatmap</div>
+                            <div class="legend-scale">
+                                <span style="color: #313695;">Low Attention</span>
+                                <span style="color: #1e8841;">Medium</span>
+                                <span style="color: #fee000;">High</span>
+                                <span style="color: #d31f27;">Highest Attention</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="heatmap-info">
+                        <h4 id="heatmap-stage">Analysis Result</h4>
+                        <p id="heatmap-description">The colored regions indicate areas where the AI model detected significant patterns related to the predicted condition. Red/orange areas show high attention, while blue areas indicate lower relevance.</p>
+                        <div class="heatmap-features">
+                            <div class="feature-item">
+                                <i class="fas fa-eye"></i>
+                                <span>Visual Attention Map</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-crosshairs"></i>
+                                <span>Localized Detection</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-analytics"></i>
+                                <span>Model Confidence Highlighting</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-grid">
+                <!-- Risk Assessment Card -->
+                <div class="result-card">
+                    <div class="card-header">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Risk Assessment</h3>
+                    </div>
+                    <div class="risk-meter">
+                        <div class="risk-dial">
+                            <div class="risk-needle" id="risk-needle"></div>
+                            <div class="risk-center">
+                                <div class="risk-percentage" id="risk-percentage">0%</div>
+                                <div class="risk-label">Risk Score</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="risk-factors">
+                        <div class="risk-factor">
+                            <span class="factor-name">No Dementia</span>
+                            <span class="factor-value factor-low" id="no-dementia-prob">0%</span>
+                        </div>
+                        <div class="risk-factor">
+                            <span class="factor-name">Mild Dementia</span>
+                            <span class="factor-value factor-medium" id="mild-dementia-prob">0%</span>
+                        </div>
+                        <div class="risk-factor">
+                            <span class="factor-name">Moderate Dementia</span>
+                            <span class="factor-value factor-high" id="moderate-dementia-prob">0%</span>
+                        </div>
+                        <div class="risk-factor">
+                            <span class="factor-name">Very Mild Dementia</span>
+                            <span class="factor-value factor-medium" id="very-mild-dementia-prob">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Brain Analysis Card -->
+                <div class="result-card">
+                    <div class="card-header">
+                        <i class="fas fa-search"></i>
+                        <h3>Brain Analysis</h3>
+                    </div>
+                    <div class="brain-findings">
+                        <div class="finding-item">
+                            <div class="finding-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="finding-content">
+                                <h4 id="stage-name">Analysis Result</h4>
+                                <p id="description-text">Detailed analysis will appear here</p>
+                            </div>
+                        </div>
+                        <div class="finding-item">
+                            <div class="finding-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div class="finding-content">
+                                <h4>Confidence Level</h4>
+                                <p id="confidence-text">Model confidence in prediction</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="confidence-meter">
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" id="confidence-fill"></div>
+                        </div>
+                        <div class="confidence-score" id="confidence-score">0%</div>
+                        <p class="confidence-note">Model Confidence</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Symptoms and Recommendations -->
+            <div class="remedies-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-stethoscope"></i>
+                        Medical Information
+                    </h2>
+                </div>
+                
+                <div class="remedies-grid">
+                    <div class="remedy-card" id="symptoms-card" style="display: none;">
+                        <div class="remedy-header">
+                            <div class="remedy-icon" style="background: var(--warning-color);">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                            <div>
+                                <h3 class="remedy-title">Common Symptoms</h3>
+                                <p class="remedy-category">Clinical Indicators</p>
+                            </div>
+                        </div>
+                        <div class="remedy-description">
+                            <ul class="symptoms-list" id="symptoms-list"></ul>
+                        </div>
+                    </div>
+
+                    <div class="remedy-card">
+                        <div class="remedy-header">
+                            <div class="remedy-icon" style="background: var(--success-color);">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div>
+                                <h3 class="remedy-title">Recommendations</h3>
+                                <p class="remedy-category">Treatment & Care</p>
+                            </div>
+                        </div>
+                        <div class="remedy-description">
+                            <ul class="recommendations-list" id="recommendations-list"></ul>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="text-center" style="margin-top: 3rem;">
+                <button class="btn btn-primary" onclick="location.reload()">
+                    <class="fas fa-redo">
+                    Analyze Another Scan
+                </button>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-main">
+                    <div class="footer-brand">
+                        <div class="footer-logo">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3 class="footer-title">Alzheimer's Disease Detection System</h3>
+                        <p class="footer-tagline">ResNet50 Powered Medical Analysis</p>
+                    </div>
+                    <div class="footer-links">
+                        <div class="footer-column">
+                            <h4>Platform</h4>
+                            <ul>
+                                <li><a href="#upload">Upload Scan</a></li>
+                                <!-- About removed -->
+                                <li><a href="#results-section">Results</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-column">
+                            <h4>Technology</h4>
+                            <ul>
+                                <li>ResNet50</li>
+                                <li>Deep Learning</li>
+                                <li>94% Accuracy</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p class="footer-disclaimer"><i class="fas fa-info-circle"></i> Medical Disclaimer: This application is for educational purposes only and should not be used for clinical diagnosis. Always consult with qualified healthcare professionals.</p>
+                    <p class="footer-copyright">&copy; 2024 Alzheimer's Detection System. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let selectedFile = null;
+        let progressInterval = null;
+
+        // DOM Elements
+        const uploadSection = document.getElementById('upload-section');
+        const fileInput = document.getElementById('file-input');
+        const previewSection = document.getElementById('preview-section');
+        const previewImg = document.getElementById('preview-img');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const loading = document.getElementById('loading');
+        const resultsSection = document.getElementById('results-section');
+        const errorAlert = document.getElementById('error-alert');
+
+        // Upload area interactions
+        uploadSection.addEventListener('click', () => fileInput.click());
+
+        uploadSection.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadSection.classList.add('drag-over');
+        });
+
+        uploadSection.addEventListener('dragleave', () => {
+            uploadSection.classList.remove('drag-over');
+        });
+
+        uploadSection.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadSection.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) handleFileSelect(files[0]);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) handleFileSelect(e.target.files[0]);
+        });
+
+        function handleFileSelect(file) {
+            if (!file.type.startsWith('image/')) {
+                showError('Please select an image file (JPG, PNG, JPEG)');
+                return;
+            }
+            if (file.size > 16 * 1024 * 1024) {
+                showError('File size must be less than 16MB');
+                return;
+            }
+            
+            selectedFile = file;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImg.src = e.target.result;
+                previewSection.style.display = 'block';
+                resultsSection.style.display = 'none';
+                hideError();
+                
+                // Update file info
+                document.getElementById('file-name').textContent = file.name;
+                document.getElementById('file-size').textContent = formatFileSize(file.size);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function removeImage() {
+            selectedFile = null;
+            previewSection.style.display = 'none';
+            fileInput.value = '';
+        }
+
+        function getApiBase() {
+            try {
+                const protocol = window.location.protocol;
+                const port = window.location.port;
+                if (protocol.startsWith('http') && (port === '5000' || port === '' || port === null)) return '';
+                return 'http://localhost:5000';
+            } catch (_) { return 'http://localhost:5000'; }
+        }
+
+        // Analysis with progress animation
+        analyzeBtn.addEventListener('click', async () => {
+            if (!selectedFile) {
+                showError('Please select a brain scan image first');
+                return;
+            }
+            
+            loading.style.display = 'block';
+            resultsSection.style.display = 'none';
+            analyzeBtn.disabled = true;
+            
+            // Start progress animation
+            startProgressAnimation();
+
+            const formData = new FormData();
+            formData.append('brain_scan', selectedFile);
+
+            try {
+                const apiUrl = `${getApiBase()}/analyze`;
+                console.log('Sending request to:', apiUrl);
+                
+                const response = await fetch(apiUrl, { method: 'POST', body: formData });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
+                    throw new Error(errorText);
+                }
+                
+                const data = await response.json();
+                console.log('Response received:', data);
+                
+                if (data.success) {
+                    displayResults(data);
+                } else {
+                    showError(data.error || 'Analysis failed. Please try again.');
+                }
+            } catch (err) {
+                console.error('Analysis error:', err);
+                showError(`Analysis failed: ${err.message || err}`);
+            } finally {
+                loading.style.display = 'none';
+                analyzeBtn.disabled = false;
+                clearInterval(progressInterval);
+            }
+        });
+
+        function startProgressAnimation() {
+            let progress = 0;
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+            
+            progressInterval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 90) progress = 90;
+                
+                progressFill.style.width = progress + '%';
+                progressText.textContent = Math.round(progress) + '%';
+            }, 200);
+        }
+
+        function displayResults(data) {
+            // Display heatmap if available
+            if (data.heatmap) {
+                const heatmapImg = document.getElementById('heatmap-img');
+                heatmapImg.src = 'data:image/png;base64,' + data.heatmap;
+                
+                // Update heatmap information
+                document.getElementById('heatmap-stage').textContent = data.prediction.stage;
+                document.getElementById('heatmap-description').textContent = 
+                    data.details.description + 
+                    " The colored overlay shows which brain regions the AI focused on during analysis. " +
+                    (data.prediction.stage.includes('Dementia') ? 
+                        "Red/orange regions indicate areas with the most significant changes." : 
+                        "The analysis shows normal brain structure.");
+            }
+            
+            // Update stage name and description
+            document.getElementById('stage-name').textContent = data.prediction.stage;
+            document.getElementById('description-text').textContent = data.details.description;
+            document.getElementById('confidence-text').textContent = `Model confidence: ${data.prediction.confidence.toFixed(1)}%`;
+
+            // Update risk dial
+            const riskPercentage = document.getElementById('risk-percentage');
+            const riskNeedle = document.getElementById('risk-needle');
+            const riskScore = data.prediction.risk_score;
+            
+            riskPercentage.textContent = riskScore.toFixed(1) + '%';
+            const angle = (riskScore / 100) * 180; // 0-180 degrees
+            riskNeedle.style.transform = `rotate(${angle}deg)`;
+
+            // Update probability factors
+            document.getElementById('no-dementia-prob').textContent = data.probabilities.no_dementia.toFixed(1) + '%';
+            document.getElementById('mild-dementia-prob').textContent = data.probabilities.mild_dementia.toFixed(1) + '%';
+            document.getElementById('moderate-dementia-prob').textContent = data.probabilities.moderate_dementia.toFixed(1) + '%';
+            document.getElementById('very-mild-dementia-prob').textContent = data.probabilities.very_mild_dementia.toFixed(1) + '%';
+
+            // Update confidence meter
+            const confidenceFill = document.getElementById('confidence-fill');
+            const confidenceScore = document.getElementById('confidence-score');
+            const confidence = data.prediction.confidence;
+            
+            setTimeout(() => {
+                confidenceFill.style.width = confidence + '%';
+                confidenceScore.textContent = confidence.toFixed(1) + '%';
+            }, 500);
+
+            // Update symptoms
+            const symptomsList = document.getElementById('symptoms-list');
+            const symptomsCard = document.getElementById('symptoms-card');
+            if (data.details.symptoms.length > 0) {
+                symptomsCard.style.display = 'block';
+                symptomsList.innerHTML = '';
+                data.details.symptoms.forEach(symptom => {
+                    const li = document.createElement('li');
+                    li.textContent = symptom;
+                    symptomsList.appendChild(li);
+                });
+            } else {
+                symptomsCard.style.display = 'none';
+            }
+
+            // Update recommendations
+            const recommendationsList = document.getElementById('recommendations-list');
+            recommendationsList.innerHTML = '';
+            data.details.recommendations.forEach(rec => {
+                const li = document.createElement('li');
+                li.textContent = rec;
+                recommendationsList.appendChild(li);
+            });
+
+            // Show results with animation
+            resultsSection.style.display = 'block';
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showError(message) {
+            errorAlert.textContent = message;
+            errorAlert.style.display = 'block';
+            setTimeout(() => { errorAlert.style.display = 'none'; }, 5000);
+        }
+
+        function hideError() {
+            errorAlert.style.display = 'none';
+        }
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.keras
+# Large model files
+alzheimers_model.keras
+alzheimers_weights.keras
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# PyCharm
+.idea/
+
+
+# Training history
+training_history.npy
+*.npy
+*.npz
+
+# Data files
+images/train/
+images/test/
+images/valid/
+*.jpg
+*.jpeg
+*.png
+*.csv
+images/CSV_datafiles/
+
+# Logs
+*.log
+logs/
+tensorboard/
+*.tensorboard
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Flask
+instance/
+.webassets-cache
+*.flaskenv
+
+# TensorFlow
+*.ckpt
+*.ckpt.*
+*.index
+*.meta
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Temp files
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
