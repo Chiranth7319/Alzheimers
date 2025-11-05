@@ -4,7 +4,7 @@ import pandas as pd
 from PIL import Image
 from sklearn.utils import shuffle
 from keras import layers, models, optimizers, callbacks
-from keras.applications.resnet50 import ResNet50, preprocess_input
+from keras.applications.resnet50 import ResNet50, preprocess_input # type: ignore
 import tensorflow as tf
 
 # Suppress TensorFlow warnings
